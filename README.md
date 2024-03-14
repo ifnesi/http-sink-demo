@@ -1,9 +1,9 @@
 ![image](src/static/images/logo.png)
 
 # http-sink-demo
-Confluent Platform Demo using Confluent HTTP Sink Connector.
+Confluent Platform demo using Confluent HTTP Sink Connector.
 
-This is a very simple demo where a [DataGen source connector](https://docs.confluent.io/kafka-connectors/datagen/current/overview.html) will product stock trade data to the `stock_trade` topic and a [HTTP sink connector](https://docs.confluent.io/kafka-connectors/http/current/overview.html) will submit a webhook (POST request) to a remote HTTP Server. The data will not be batched, that is, for every event a POST request will be submitted, but that can be changed as it is a configuration parameter on the HTTP sink connector.
+This is a very simple demo where a [DataGen source connector](https://docs.confluent.io/kafka-connectors/datagen/current/overview.html) will product stock trade (dummy) data to the `stock_trade` topic and a [HTTP sink connector](https://docs.confluent.io/kafka-connectors/http/current/overview.html) will submit a webhook (POST request) to a remote HTTP Server. The data will not be batched, that is, for every event a POST request will be submitted, but that can be changed as it is a configuration parameter on the HTTP sink connector.
 
 ## Demo Diagram
 ![image](docs/demo_diagram.png)
@@ -14,7 +14,7 @@ This is a very simple demo where a [DataGen source connector](https://docs.confl
 - [Python 3.8+](https://www.python.org/)
 
 ## The Demo
-This demo will create two connectors:
+This demo runs all on Docker. It will create two connectors:
 
 ![image](docs/connectors.png)
 
@@ -26,12 +26,12 @@ It will publish stock trading (dummy) data at every 3 seconds to the topic `stoc
 ![image](docs/topic-stock_trade.png)
 
 ### `http_sink` (HTTP Sink Connector)
-It submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topic `stock_trade`, but that connector can also be configured in a batched mode.
+It will submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topic `stock_trade`, but that connector can also be configured in a batched mode.
 
 ![image](docs/http_config.png)
 
 ### HTTP Server
-An HTTP server will process the POST requests to `http://http-server:8888/api/webhook` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
+An HTTP server will process the POST requests sent to `http://http-server:8888/api/webhook` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
 
 ![image](docs/http-server.png)
 
