@@ -18,7 +18,7 @@ This demo will create two connectors:
 
 ![image](docs/connectors.png)
 
-### datagen_stock_trade (DataGen Source Connector)
+### `datagen_stock_trade` (DataGen Source Connector)
 It will publish stock trading (dummy) data at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
 
 ![image](docs/datagen_config.png)
