@@ -1,7 +1,42 @@
-# http-sink-demo
-Demo using Confluent HTTP Sink Connector (WiP)
+![image](src/static/images/logo.png)
 
-./demo_start.sh 
+# http-sink-demo
+Confluent Platform Demo using Confluent HTTP Sink Connector.
+
+This is a very simple demo where a [DataGen source connector](https://docs.confluent.io/kafka-connectors/datagen/current/overview.html) will product stock trade data to the `stock_trade` topic and a [HTTP sink connector](https://docs.confluent.io/kafka-connectors/http/current/overview.html) will submit a webhook (POST request) to a remote HTTP Server. The data will not be batched, that is, for every event a POST request will be submitted, but that can be changed as it is a configuration parameter on the HTTP sink connector.
+
+## Demo Diagram
+![image](docs/demo_diagram.png)
+
+## Requirements
+- [curl](https://curl.se/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Python 3.8+](https://www.python.org/)
+
+## The Demo
+This demo will create two connectors:
+
+![image](docs/connectors.png)
+
+### datagen_stock_trade (DataGen Source Connector)
+It will publish stock trading (dummy) data at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
+
+![image](docs/datagen_config.png)
+
+![image](docs/topic-stock_trade.png)
+
+### `http_sink` (HTTP Sink Connector)
+It submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topic `stock_trade`, but that connector can also be configured in a batched mode.
+
+![image](docs/http_config.png)
+
+### HTTP Server
+An HTTP server will process the POST requests to `http://http-server:8888/api/webhook` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
+
+![image](docs/http-server.png)
+
+## Running the demo
+To automatically start the demo, run `./demo_start.sh`, once the docker images are downloaded, it should take less than 2 minutes to have everything up and running.
 ```
 [+] Building 1.7s (10/10) FINISHED                                                                                                                                                                                                                                                             docker:desktop-linux
  => [http-server internal] load build definition from Dockerfile
@@ -71,7 +106,9 @@ HTTP Sink connector status
 Demo environment is ready!
 ```
 
-./demo_stop.sh
+## Stopping the demo
+To stop the demo, please run `./demo_stop.sh`.
+
 ```
 [+] Running 7/7
  ✔ Container connect               Removed
@@ -82,4 +119,8 @@ Demo environment is ready!
  ✔ Container zookeeper             Removed
  ✔ Network http-sink-demo_default  Removed 
  ```
- 
+
+## External References
+Check out [Confluent's Developer portal](https://developer.confluent.io), it has free courses, documents, articles, blogs, podcasts and so many more content to get you up and running with a fully managed Apache Kafka service.
+
+Disclaimer: I work for Confluent :wink:
