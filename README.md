@@ -36,7 +36,7 @@ An HTTP server will process the POST requests sent to `http://http-server:8888/a
 The HTTP Server, written in Python Flask, has three routes:
  - POST `/api/webhook`: Process POST requests (webhooks) from the HTTP sink connector. Every new message will be pushed to a local in-memory queue
  - GET `/`: Open the main page where the stock trade events will be displayed. That page will submit an AJAX request to `/get_data_queue` at every 500ms
- - GET `/get_data_queue`: Process AJAX GET request to off-load the queue and display the messages
+ - GET `/get_data_queue`: Process AJAX requests to off-load the queue and display the messages
 
 ![image](docs/http-server.png)
 
