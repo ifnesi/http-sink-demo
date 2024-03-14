@@ -86,5 +86,8 @@ sleep 1
 echo ""
 echo ""
 echo "Demo environment is ready!"
-echo "Confluent Control Center -> http://localhost:9021"
 echo ""
+
+# Open browser with C3 and HTTP Server
+python3 -m webbrowser -t "http://localhost:9021"
+python3 -m webbrowser -t "http://localhost:8888"
