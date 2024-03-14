@@ -106,6 +106,10 @@ HTTP Sink connector status
 Demo environment is ready!
 ```
 
+At the end of the start up script, it will open the following web pages:
+ - Confluent Control Center: http://localhost:9021
+ - HTTP Server: http://localhost:8888
+
 ## Stopping the demo
 To stop the demo, please run `./demo_stop.sh`.
 
