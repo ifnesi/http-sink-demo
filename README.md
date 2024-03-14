@@ -33,6 +33,11 @@ It will submit a POST request to `http://http-server:8888/api/webhook` for every
 ### HTTP Server
 An HTTP server will process the POST requests sent to `http://http-server:8888/api/webhook` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
 
+The HTTP Server, written in Python Flask, has three routes:
+ - POST `/api/webhook`: Process POST requests (webhooks) from the HTTP sink connector. Every new message will be pushed to a local in-memory queue
+ - GET `/`: Open the main page where the stock trade events will be displayed. That page will submit an AJAX request to `/get_data_queue` at every 500ms
+ - GET `/get_data_queue`: Process AJAX GET request to off-load the queue and display the messages
+
 ![image](docs/http-server.png)
 
 ## Running the demo
