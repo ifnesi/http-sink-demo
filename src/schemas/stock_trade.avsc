@@ -1,0 +1,32 @@
+{
+    "namespace": "stock-trade",
+    "name": "recods.com",
+    "type": "record",
+    "xpath": "objectRoot",
+    "fields": [
+        {
+            "name": "side",
+            "type": "string"
+        },
+        {
+            "name": "quantity",
+            "type": "int"
+        },
+        {
+            "name": "symbol",
+            "type": "string"
+        },
+        {
+            "name": "price",
+            "type": "double"
+        },
+        {
+            "name": "account",
+            "type": "string"
+        },
+        {
+            "name": "userid",
+            "type": "string"
+        }
+    ]
+}

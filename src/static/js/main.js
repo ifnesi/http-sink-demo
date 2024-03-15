@@ -11,7 +11,7 @@ function get_data_queue() {
         success: function(data) {
             var text = $("#data-queue").val();
             for (var i = 0; i < data.length; i++) {
-                text = text + data[i] + "\r\n";
+                text = text + "[" + data[i][0] + "]: " + data[i][1] + "\r\n";
             }
             $("#data-queue").val(text);
             var textarea = document.getElementById("data-queue");

@@ -3,7 +3,10 @@
 # http-sink-demo
 Confluent Platform demo using Confluent HTTP Sink Connector.
 
-This is a very simple demo where a [DataGen source connector](https://docs.confluent.io/kafka-connectors/datagen/current/overview.html) will product stock trade (dummy) data to the `stock_trade` topic and a [HTTP sink connector](https://docs.confluent.io/kafka-connectors/http/current/overview.html) will submit a webhook (POST request) to a remote HTTP Server. The data will not be batched, that is, for every event a POST request will be submitted, but that can be changed as it is a configuration parameter on the HTTP sink connector.
+This is a very simple demo where:
+ - A [DataGen source connector](https://docs.confluent.io/kafka-connectors/datagen/current/overview.html) and a custom producer will product stock trade (dummy) data to the topics `stock_trade` (AVRO) and `stock_trade_xml` (XML) respectively.
+ - A streaming application will convert the XML data to AVRO and have it published to the topic `stock_trade_avro_stream_app`.
+ - At last, a [HTTP sink connector](https://docs.confluent.io/kafka-connectors/http/current/overview.html) will submit a webhook (POST request) to a remote HTTP Server with the data from the topics `stock_trade` and `stock_trade_avro_stream_app`. The data will not be batched, that is, for every event a POST request will be submitted, but that can be changed as it is a configuration parameter on the HTTP sink connector.
 
 ## Demo Diagram
 ![image](docs/demo_diagram.png)
@@ -18,23 +21,33 @@ This demo runs all on Docker. It will create two connectors:
 
 ![image](docs/connectors.png)
 
-### `datagen_stock_trade` (DataGen Source Connector)
-It will publish stock trading (dummy) data at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
+### XML Producer:
+It will publish stock trading (dummy) data in XML format at every 3 seconds to the topic `stock_trade_xml` (.e.g `<?xml version=\"1.0\" encoding=\"UTF-8\"?><objectRoot><side>BUY</side><quantity>6</quantity><symbol>STK_1</symbol><price>7.17</price><account>Account_12</account><userid>User_09</userid></objectRoot>`)
+
+![image](docs/topic-stock_trade_xml.png)
+
+### DataGen Source Connector: `datagen_stock_trade`
+It will publish stock trading (dummy) data in AVRO format at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
 
 ![image](docs/datagen_config.png)
 
 ![image](docs/topic-stock_trade.png)
 
-### `http_sink` (HTTP Sink Connector)
-It will submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topic `stock_trade`, but that connector can also be configured in a batched mode.
+### Streaming Application:
+It will consume the XML data from the topic `stock_trade_xml` (XML), have it converted to AVRO and publish to the topic `stock_trade_avro_stream_app`.
+
+![image](docs/topic-stock_trade_avro_stream_app.png)
+
+### HTTP Sink Connector: `http_sink`
+It will submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topics `stock_trade` and `stock_trade_avro_stream_app` (both AVRO). That connector can also be configured in a batched mode.
 
 ![image](docs/http_config.png)
 
 ### HTTP Server
-An HTTP server will process the POST requests sent to `http://http-server:8888/api/webhook` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
+An HTTP server will process the POST requests sent to `http://http-server:8888/api/webhook/<topic>` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
 
 The HTTP Server, written in Python Flask, has three routes:
- - POST `/api/webhook`: Process POST requests (webhooks) from the HTTP sink connector. Every new message will be pushed to a local in-memory queue
+ - POST `/api/webhook/<topic>`: Process POST requests (webhooks) from the HTTP sink connector. Every new message will be pushed to a local in-memory queue
  - GET `/`: Open the main page where the stock trade events will be displayed. That page will submit an AJAX request to `/get_data_queue` at every 500ms
  - GET `/get_data_queue`: Process AJAX requests to off-load the queue and display the messages
 

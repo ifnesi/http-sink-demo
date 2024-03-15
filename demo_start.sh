@@ -45,12 +45,12 @@ echo "Creating HTTP Sink connector"
 curl -i -X PUT http://localhost:8083/connectors/http_sink/config \
      -H "Content-Type: application/json" \
      -d '{
-            "topics": "stock_trade",  
+            "topics": "stock_trade, stock_trade_avro_stream_app",  
             "tasks.max": "1",    
             "connector.class": "io.confluent.connect.http.HttpSinkConnector",
             "request.method": "post",
             "auth.type": "NONE",
-            "http.api.url": "http://http-server:8888/api/webhook",
+            "http.api.url": "http://http-server:8888/api/webhook/${topic}",
             "headers": "Content-Type:application/json",
             "key.converter": "org.apache.kafka.connect.storage.StringConverter",
             "value.converter": "io.confluent.connect.avro.AvroConverter",
