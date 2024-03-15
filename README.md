@@ -17,31 +17,32 @@ This is a very simple demo where:
 - [Python 3.8+](https://www.python.org/)
 
 ## The Demo
-This demo runs all on Docker. It will create two connectors:
-
-![image](docs/connectors.png)
+This demo runs all on Docker.
 
 ### XML Producer:
 It will publish stock trading (dummy) data in XML format at every 3 seconds to the topic `stock_trade_xml` (.e.g `<?xml version=\"1.0\" encoding=\"UTF-8\"?><objectRoot><side>BUY</side><quantity>6</quantity><symbol>STK_1</symbol><price>7.17</price><account>Account_12</account><userid>User_09</userid></objectRoot>`)
 
 ![image](docs/topic-stock_trade_xml.png)
 
-### DataGen Source Connector: `datagen_stock_trade`
-It will publish stock trading (dummy) data in AVRO format at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
+### Connectors
+It will have two connectors:
+
+![image](docs/connectors.png)
+
+- DataGen Source Connector: `datagen_stock_trade`: It will publish stock trading (dummy) data in AVRO format at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
 
 ![image](docs/datagen_config.png)
 
 ![image](docs/topic-stock_trade.png)
 
+ - HTTP Sink Connector: `http_sink`: It will submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topics `stock_trade` and `stock_trade_avro_stream_app` (both AVRO). That connector can also be configured in a batched mode.
+
+![image](docs/http_config.png)
+
 ### Streaming Application:
 It will consume the XML data from the topic `stock_trade_xml` (XML), have it converted to AVRO and publish to the topic `stock_trade_avro_stream_app`.
 
 ![image](docs/topic-stock_trade_avro_stream_app.png)
-
-### HTTP Sink Connector: `http_sink`
-It will submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topics `stock_trade` and `stock_trade_avro_stream_app` (both AVRO). That connector can also be configured in a batched mode.
-
-![image](docs/http_config.png)
 
 ### HTTP Server
 An HTTP server will process the POST requests sent to `http://http-server:8888/api/webhook/<topic>` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
