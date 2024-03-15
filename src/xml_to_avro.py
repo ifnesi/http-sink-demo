@@ -81,11 +81,13 @@ def convert_to_avro(
                 field_type = field["type"]
                 field_value = raw_message.get(field_name)
                 if field_name in raw_message.keys():
-                    if field_type in ["int", "long"]:
+                    if field_value is None:
+                        message[field_name] = None
+                    elif field_type in ["int", "long"]:
                         message[field_name] = int(field_value)
-                    elif field_type in ["double"]:
+                    elif field_type in ["float", "double"]:
                         message[field_name] = float(field_value)
-                    elif field_type in ["bool"]:
+                    elif field_type in ["boolean"]:
                         message[field_name] = field_value.lower() in ["true", "1", "t", "y", "yes"]
                     else:
                         message[field_name] = str(field_value)
