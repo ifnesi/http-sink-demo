@@ -29,13 +29,13 @@ It will have two connectors:
 
 ![image](docs/connectors.png)
 
-- DataGen Source Connector: `datagen_stock_trade`: It will publish stock trading (dummy) data in AVRO format at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
+- DataGen Source Connector (`datagen_stock_trade`): It will publish stock trading (dummy) data in AVRO format at every 3 seconds to the topic `stock_trade` (.e.g `{"side": "BUY", "quantity": 5, "symbol": "STK_5", "price": 10.444406868603032, "account": "Account_21", "userid": "User_00"}`)
 
 ![image](docs/datagen_config.png)
 
 ![image](docs/topic-stock_trade.png)
 
- - HTTP Sink Connector: `http_sink`: It will submit a POST request to `http://http-server:8888/api/webhook` for every message published to the topics `stock_trade` and `stock_trade_avro_stream_app` (both AVRO). That connector can also be configured in a batched mode.
+ - HTTP Sink Connector (`http_sink`): It will submit a POST request to `http://http-server:8888/api/webhook/<topic>` for every message published to the topics `stock_trade` and `stock_trade_avro_stream_app` (both AVRO). That connector can also be configured in a batched mode.
 
 ![image](docs/http_config.png)
 
