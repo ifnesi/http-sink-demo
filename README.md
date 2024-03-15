@@ -19,7 +19,7 @@ This is a very simple demo where:
 ## The Demo
 This demo runs all on Docker.
 
-### XML Producer:
+### XML Producer (`src/xml_producer.py`)
 It will publish stock trading (dummy) data in XML format at every 3 seconds to the topic `stock_trade_xml` (.e.g `<?xml version=\"1.0\" encoding=\"UTF-8\"?><objectRoot><side>BUY</side><quantity>6</quantity><symbol>STK_1</symbol><price>7.17</price><account>Account_12</account><userid>User_09</userid></objectRoot>`)
 
 ![image](docs/topic-stock_trade_xml.png)
@@ -39,12 +39,17 @@ It will have two connectors:
 
 ![image](docs/http_config.png)
 
-### Streaming Application:
+### Streaming Application (`src/xml_to_avro.py`)
 It will consume the XML data from the topic `stock_trade_xml` (XML), have it converted to AVRO and publish to the topic `stock_trade_avro_stream_app`.
+
+That streaming application was built using the [transactions API](https://developer.confluent.io/learn/kafka-transactions-and-guarantees/), that is required because it consumes-transforms-produces
+in a loop with exactly-once semantics.
+
+That API is also available in Python (see example [here](https://github.com/confluentinc/confluent-kafka-python/blob/master/examples/eos-transactions.py)).
 
 ![image](docs/topic-stock_trade_avro_stream_app.png)
 
-### HTTP Server
+### HTTP Server (`src/http_server.py`)
 An HTTP server will process the POST requests sent to `http://http-server:8888/api/webhook/<topic>` and have the data saved to a local in-memory queue. When accessing the server (http://localhost:8888) the messages will be off-loaded from the queue and displayed on a text box.
 
 The HTTP Server, written in Python Flask, has three routes:
